@@ -1,0 +1,127 @@
+module BIT
+{
+
+//用户登陆
+struct UserReq
+{
+		0 require string sAppId;
+		1 require string sUserId;
+		2 require string sPasswd;
+};
+
+struct UserRsp
+{
+		0 require int iResult;
+		1 optional string sResultDesc;
+};
+
+//请求查询合约
+struct InstrumentReq
+{
+		0 require string sInstrumentID;   //合约id，比如铁矿石 i1805
+};
+
+struct InstrumentRsp
+{
+		0 require string sInstrumentID;     //合约id，比如铁矿石 i1805
+		1 require string sDeliveryMonth;    //交割月
+		2 require string sLongMarginRatio;  //多头保证金率
+		3 require string sShortMarginRatio; //空头保证金率
+};
+
+//查询资金账户
+struct TradingAccountReq
+{
+		0 require string sBrokerID;   //经纪公司代码
+		1 require string sInvestorID; //投资者代码
+};
+
+struct TradingAccountRsp
+{
+		0 optional double dBalance;         //权益
+		1 optional double dAvailable;       //可用
+		2 optional double dCurrMargin;      //保证金
+		3 optional double dCloseProfit;     //平仓盈亏
+		4 optional double dPositionProfit;  //持仓盈亏
+		5 optional double dCommission;      //手续费
+		6 optional double dFrozenMargin;    //冻结保证金
+};
+
+//请求查询投资者持仓
+struct InvestorPositionReq
+{
+		0 require string sBrokerID;     //经纪公司代码
+		1 require string sInvestorID;   //投资者代码
+		2 require string sInstrumentID; //合约代码
+};
+
+struct InvestorPositionRsp
+{
+		0 optional string sInstrumentID;   //合约
+		1 optional int    iDirection;       //方向
+		2 optional int    iPosition;       //总持仓
+		3 optional int    iYdPosition;     //昨仓
+		4 optional int    iTodayPosition;  //今仓
+		5 optional double dPositionProfit; //持仓盈亏
+		6 optional double dUseMargin;      //保证金
+};
+
+//报单
+struct OrderInsertReq
+{
+		0  require  string sBrokerID;             //经纪公司代码
+		1  require  string sInvestorID;           //投资者代码
+		2  require  string sInstrumentID;         //合约代码
+		3  require  string sOrderRef;             //报单引用
+		4  optional string sUserID;               //用户代码
+		5  require  string sOrderPriceType;       //报单引用
+		6  require  int    iDirection;            //买卖方向
+		7  require  int    iCombOffsetFlag;       //组合开平标志:开仓|平仓……
+		8  require  int    iCombHedgeFlag;        //组合投机套保标志
+		9  require  double dPrice;                //价格
+		10 require  int    iVolumeTotalOriginal;  //数量
+		11 require  int    iTimeCondition;        //有效期类型:当日有效|指定日期前有效
+		12 optional string sGTDDate;              //GTD日期
+		13 require  int    iVolumeCondition;      //成交量类型 
+		14 optional int    iMinVolume;            //成交量
+		15 require  string sContingentCondition;  //触发条件
+		16 optional double sStopPrice;            //止损价
+		17 optional int    iForceCloseReason;     //强平原因
+		18 optional int    iIsAutoSuspend;        //自动挂起标志:否	
+		19 optional int    iUserForceClose;       //用户强评标志:否
+};
+
+struct OrderInsertRsp
+{
+		0 require int iResult;
+		1 optional string sResultDesc;
+};
+
+//撤单、修改单
+struct OrderActionReq
+{
+		0  require  string sBrokerID;     //经纪公司代码
+		1  require  string sInvestorID;   //投资者代码
+		2  require  string sOrderRef;     //报单引用
+		3  optional string sExchangeID;   //交易所代码
+		4  require  string sOrderSysID;   //报单编号
+		5  require  int    iActionFlag;   //操作标志  撤单  修改单
+};
+
+struct OrderActionRsp
+{
+		0 require int iResult;
+		1 optional string sResultDesc;
+};
+
+interface Hello
+{
+    int setUserAccount(UserReq req, out UserRsp rsp);
+    int getInstrument(InstrumentReq req, out InstrumentRsp rsp);
+    int getTradingAccount(TradingAccountReq req, out TradingAccountRsp rsp);
+    int getInvestorPosition(InvestorPositionReq req, out InvestorPositionRsp rsp);
+    int OrderInsert(OrderInsertReq req, out OrderInsertRsp rsp);
+    int OrderAction(OrderActionReq req, out OrderActionRsp rsp);
+};
+
+}; 
